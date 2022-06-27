@@ -6,7 +6,7 @@ import { icons } from '../format/strings.json';
 export type IconType = keyof typeof icons;
 
 export type AnnotationType = 'all' | 'none' | 'coverage' | 'failed-tests';
-export type PackageManagerType = 'npm' | 'yarn';
+export type PackageManagerType = 'npm' | 'yarn' | 'pnpm';
 export type SkipStepType = 'all' | 'none' | 'install';
 
 export type Options = {
@@ -18,6 +18,9 @@ export type Options = {
     workingDirectory?: string;
     packageManager: PackageManagerType;
     skipStep: SkipStepType;
+    customTitle?: string;
+    coverageFile?: string;
+    baseCoverageFile?: string;
 };
 
 const validAnnotationOptions: Array<AnnotationType> = [
@@ -27,7 +30,11 @@ const validAnnotationOptions: Array<AnnotationType> = [
     'failed-tests',
 ];
 
-const packageManagerOptions: Array<PackageManagerType> = ['npm', 'yarn'];
+const packageManagerOptions: Array<PackageManagerType> = [
+    'npm',
+    'yarn',
+    'pnpm',
+];
 
 const validIconOptions = Object.keys(icons);
 
@@ -46,7 +53,16 @@ const optionSchema = yup.object().shape({
     workingDirectory: yup.string(),
     packageManager: yup.string().required().oneOf(packageManagerOptions),
     skipStep: yup.string().required().oneOf(validSkipStepOptions),
+    customTitle: yup.string(),
+    coverageFile: yup.string(),
+    baseCoverageFile: yup.string(),
 });
+
+export const shouldInstallDeps = (skipStep: SkipStepType): Boolean =>
+    !['all', 'install'].includes(skipStep);
+
+export const shouldRunTestScript = (skipStep: SkipStepType): Boolean =>
+    !['all'].includes(skipStep);
 
 export const getOptions = async (): Promise<Options> => {
     const token = getInput('github-token', {
@@ -60,6 +76,9 @@ export const getOptions = async (): Promise<Options> => {
     const annotations = getInput('annotations');
     const packageManager = getInput('package-manager');
     const skipStep = getInput('skip-step');
+    const customTitle = getInput('custom-title');
+    const coverageFile = getInput('coverage-file');
+    const baseCoverageFile = getInput('base-coverage-file');
 
     try {
         const options: Options = (await optionSchema.validate({
@@ -71,6 +90,9 @@ export const getOptions = async (): Promise<Options> => {
             annotations,
             packageManager,
             skipStep,
+            customTitle,
+            coverageFile,
+            baseCoverageFile,
         })) as Options;
 
         return options;

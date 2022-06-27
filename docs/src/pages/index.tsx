@@ -36,11 +36,9 @@ on:
 jobs:
     coverage:
         runs-on: ubuntu-latest
-        env:
-            CI_JOB_NUMBER: 1
         steps:
             - uses: actions/checkout@v1
-            - uses: artiomtr/jest-coverage-report-action@v1.3
+            - uses: artiomtr/jest-coverage-report-action@v2
               with:
                   github-token: \${{ secrets.GITHUB_TOKEN }}
                   #   threshold: 80 # optional parameter
@@ -119,14 +117,14 @@ const Home = () => (
             subtitle="This action is..."
             title="Responsible"
             description="Helps you keep track coverage of your project. Forms a reporting comment for each PR. In addition, highlights files with reduced coverage and new files."
-            src={CoverageCommentExampleImage}
+            images={CoverageCommentExampleImage.images}
             alt="Example of coverage comment"
             even
         />
         <InfoImageScreen
             title="Observant"
             description="This action will help you to spot uncovered lines of code and failed tests by creating annotations. Annotations are generated for every not covered statement / branch / function and failed test."
-            src={AnnotationExampleImage}
+            images={AnnotationExampleImage.images}
             alt="Example of generated annotations"
             shadow
         />
