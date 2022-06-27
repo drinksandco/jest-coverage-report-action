@@ -2,8 +2,3 @@ html,
 body {
     scroll-behavior: smooth;
 }
-
-::selection {
-    color: #000;
-    background: #b3446356;
-}

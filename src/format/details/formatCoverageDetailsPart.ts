@@ -2,18 +2,30 @@ import markdownTable from 'markdown-table';
 
 import { getFileCoverageDetailRow } from './getFileCoverageDetailRow';
 import { CoverageDetailsMap } from '../../typings/Coverage';
-import { createMarkdownSpoiler } from '../../utils/createMarkdownSpoiler';
-import { i18n } from '../../utils/i18n';
-import { withExplanation } from '../../utils/withExplanation';
+import { Icons } from '../Icons';
+import { insertArgs } from '../insertArgs';
+import { details } from '../strings.json';
+import { hint } from '../strings.json';
+import { createMarkdownSpoiler } from '../utils/createMarkdownSpoiler';
+import { formatTable } from '../utils/formatTable';
+
+export type DetailsFormatOptions = {
+    summary: string;
+    heading: string;
+};
 
 export const formatCoverageDetailsPart = (
-    summary: string,
+    icons: Icons,
+    formatOptions: DetailsFormatOptions,
     headDetails: CoverageDetailsMap,
     baseDetails?: CoverageDetailsMap,
     threshold?: number
 ): string | undefined => {
+    const { summary, heading } = formatOptions;
+
     const tableContent = Object.keys(headDetails).map((filename) =>
         getFileCoverageDetailRow(
+            icons,
             filename,
             headDetails[filename],
             baseDetails?.[filename],
@@ -23,24 +35,16 @@ export const formatCoverageDetailsPart = (
 
     if (tableContent.length > 0) {
         return createMarkdownSpoiler({
-            body: markdownTable(
-                [
-                    [
-                        withExplanation(
-                            i18n('status'),
-                            i18n('statusExplanation')
-                        ),
-                        i18n('filename'),
-                        i18n('statements'),
-                        i18n('branches'),
-                        i18n('functions'),
-                        i18n('lines'),
-                    ],
-                    ...tableContent,
-                ],
-                {
-                    align: ['c', 'l', 'l', 'l', 'l', 'l'],
-                }
+            body: formatTable(
+                heading,
+                markdownTable([details.columnHeaders, ...tableContent], {
+                    align: details.columnAlignment,
+                }),
+                insertArgs(hint, {
+                    coverageGood: icons.coverageGood,
+                    coverageNormal: icons.coverageNormal,
+                    coverageBad: icons.coverageBad,
+                })
             ),
             summary,
         });

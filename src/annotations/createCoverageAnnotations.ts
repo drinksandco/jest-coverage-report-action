@@ -1,16 +1,22 @@
 import { relative } from 'path';
 
 import { Annotation } from './Annotation';
+import {
+    notCoveredBranchMessage,
+    notCoveredBranchTitle,
+    notCoveredFunctionMessage,
+    notCoveredFunctionTitle,
+    notCoveredStatementMessage,
+    notCoveredStatementTitle,
+} from '../format/strings.json';
 import { JsonReport, Location } from '../typings/JsonReport';
-import { i18n } from '../utils/i18n';
-import { isValidNumber } from '../utils/isValidNumber';
 
 const getLocation = (
     start: Location = { line: 0 },
     end: Location = { line: 0 }
 ): {
-    start_line?: number;
-    end_line?: number;
+    start_line: number;
+    end_line: number;
     start_column?: number;
     end_column?: number;
 } => ({
@@ -29,7 +35,7 @@ const getLocation = (
 export const createCoverageAnnotations = (
     jsonReport: JsonReport
 ): Array<Annotation> => {
-    const annotations: Partial<Annotation>[] = [];
+    const annotations: Annotation[] = [];
 
     Object.entries(jsonReport.coverageMap).forEach(
         ([fileName, fileCoverage]) => {
@@ -44,8 +50,8 @@ export const createCoverageAnnotations = (
                             ),
                             path: normalizedFilename,
                             annotation_level: 'warning',
-                            title: i18n('notCoveredStatementTitle'),
-                            message: i18n('notCoveredStatementMessage'),
+                            title: notCoveredStatementTitle,
+                            message: notCoveredStatementMessage,
                         });
                     }
                 }
@@ -68,10 +74,8 @@ export const createCoverageAnnotations = (
                                         ),
                                         path: normalizedFilename,
                                         annotation_level: 'warning',
-                                        title: i18n('notCoveredBranchTitle'),
-                                        message: i18n(
-                                            'notCoveredBranchMessage'
-                                        ),
+                                        title: notCoveredBranchTitle,
+                                        message: notCoveredBranchMessage,
                                     });
                                 }
                             }
@@ -90,8 +94,8 @@ export const createCoverageAnnotations = (
                             ),
                             path: normalizedFilename,
                             annotation_level: 'warning',
-                            title: i18n('notCoveredFunctionTitle'),
-                            message: i18n('notCoveredFunctionMessage'),
+                            title: notCoveredFunctionTitle,
+                            message: notCoveredFunctionMessage,
                         });
                     }
                 }
@@ -99,9 +103,5 @@ export const createCoverageAnnotations = (
         }
     );
 
-    return annotations.filter(
-        (annotation): annotation is Annotation =>
-            isValidNumber(annotation.start_line) &&
-            isValidNumber(annotation.end_line)
-    );
+    return annotations;
 };

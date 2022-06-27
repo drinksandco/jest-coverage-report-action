@@ -27,13 +27,6 @@ Or via yarn:
 yarn jest
 ```
 
-Or via pnpm (pnpx):
-
-```bash
-
-pnpx jest
-```
-
 <!-- TODO: replace link -->
 
 If this command is not working for you, see [how to setup custom testing script](https://github.com/ArtiomTr/jest-coverage-report-action#customizing-test-script).
@@ -52,7 +45,7 @@ jobs:
     coverage:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v1
             - uses: artiomtr/jest-coverage-report-action@v1.3
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}

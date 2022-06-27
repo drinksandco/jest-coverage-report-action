@@ -2,23 +2,38 @@ import { context } from '@actions/github';
 
 import { CreateCheckOptions } from './CreateCheckOptions';
 import { Annotation } from '../../annotations/Annotation';
-import { i18n } from '../../utils/i18n';
+import { insertArgs } from '../insertArgs';
+import {
+    coverageAnnotationsText,
+    coverageFail,
+    coverageOk,
+    coverageTitle,
+    coveredCheckName,
+    tooMuchAnnotations,
+} from '../strings.json';
+import { decimalToString } from '../utils/decimalToString';
 
 export const formatCoverageAnnotations = (
+    success: boolean,
+    coverage: number,
+    threshold: number,
     annotations: Array<Annotation>
 ): CreateCheckOptions => ({
     ...context.repo,
     status: 'completed',
     head_sha: context.payload.pull_request?.head.sha ?? context.sha,
-    conclusion: 'success',
-    name: i18n('coveredCheckName'),
+    conclusion: success ? 'success' : 'failure',
+    name: coveredCheckName,
     output: {
-        title: i18n('coverageTitle'),
-        summary: i18n('coverageAnnotations'),
+        title: coverageTitle,
+        summary: insertArgs(success ? coverageOk : coverageFail, {
+            coverage: decimalToString(coverage ?? 0),
+            threshold: decimalToString(threshold ?? 0),
+        }),
         text: [
-            i18n('coverageAnnotationsText'),
+            coverageAnnotationsText,
             annotations.length > 50 &&
-                i18n('tooMuchAnnotations', {
+                insertArgs(tooMuchAnnotations, {
                     hiddenCount: annotations.length - 50,
                 }),
         ]

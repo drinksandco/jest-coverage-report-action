@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
-        "target": "ES2019",
+        "target": "es5",
         "module": "commonjs",
         "declaration": false,
         "outDir": "./dist",
         "strict": true,
         "esModuleInterop": true,
-        "lib": ["ES2019"],
+        "lib": ["ES2015"],
         "rootDir": "src",
         "resolveJsonModule": true
     },

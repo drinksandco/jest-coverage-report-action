@@ -1,10 +1,14 @@
+const withImages = require('next-images');
 const path = require('path');
 
 const remarkPlugins = [require('remark-slug')];
 
-module.exports = {
+module.exports = withImages({
+    webpack5: true,
+    fileExtensions: ['jpg', 'jpeg', 'png'],
     pageExtensions: ['tsx', 'jsx', 'md', 'mdx'],
-    webpack(config, { defaultLoaders }) {
+    esModule: true,
+    webpack(config, { isServer, defaultLoaders }) {
         config.module.rules.push({
             test: /.mdx?$/,
             use: [
@@ -20,21 +24,6 @@ module.exports = {
         });
 
         config.module.rules.push({
-            test: /\.(jpe?g|png|webp)$/i,
-            use: [
-                {
-                    loader: 'responsive-loader',
-                    options: {
-                        adapter: require('responsive-loader/sharp'),
-                        sizes: [320, 640, 960, 1200, 1800, 2400],
-                        outputPath: 'static',
-                        publicPath: '_next/static',
-                    },
-                },
-            ],
-        });
-
-        config.module.rules.push({
             test: /\.svg$/,
             issuer: {
                 test: /\.(js|ts)x?$/,
@@ -44,4 +33,4 @@ module.exports = {
 
         return config;
     },
-};
+});

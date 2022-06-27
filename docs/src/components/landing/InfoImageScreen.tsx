@@ -2,19 +2,18 @@
 import React from 'react';
 
 import { InfoScreen, InfoScreenProps } from './InfoScreen';
-import { ImageSrc, ResponsiveImage } from '../ResponsiveImage';
 
 export type InfoImageScreenProps = Omit<InfoScreenProps, 'children'> & {
-    images: ImageSrc[];
+    src: string;
     alt: string;
 };
 
 export const InfoImageScreen = ({
-    images,
+    src,
     alt,
     ...infoScreenProps
 }: InfoImageScreenProps) => (
     <InfoScreen {...infoScreenProps}>
-        <ResponsiveImage alt={alt} width="100%" height="100%" images={images} />
+        <img src={src} width="100%" height="100%" alt={alt} />
     </InfoScreen>
 );

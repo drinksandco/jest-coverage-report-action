@@ -2,7 +2,6 @@ module.exports = {
     moduleFileExtensions: ['ts', 'js'],
     transform: {
         '^.+\\.ts$': 'ts-jest',
-        '^.+\\.md$': '<rootDir>/fileTransformer.js',
     },
     testMatch: ['**/*.(test|spec).ts'],
     globals: {
@@ -10,6 +9,8 @@ module.exports = {
             babelConfig: true,
         },
     },
-    collectCoverageFrom: ['src/**/{!(index.ts),}.ts'],
+    collectCoverage: true,
+    collectCoverageFrom: ['src/**/*.ts'],
     coveragePathIgnorePatterns: ['/node_modules/'],
+    coverageReporters: [],
 };

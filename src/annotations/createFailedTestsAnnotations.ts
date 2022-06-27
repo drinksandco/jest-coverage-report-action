@@ -4,7 +4,6 @@ import stripAnsi from 'strip-ansi';
 
 import { Annotation } from './Annotation';
 import { JsonReport } from '../typings/JsonReport';
-import { isValidNumber } from '../utils/isValidNumber';
 
 export const createFailedTestsAnnotations = (
     jsonReport: JsonReport
@@ -15,7 +14,7 @@ export const createFailedTestsAnnotations = (
         return [];
     }
 
-    const annotations: Array<Partial<Annotation>> = [];
+    const annotations: Array<Annotation> = [];
 
     const cwd = process.cwd();
 
@@ -31,8 +30,8 @@ export const createFailedTestsAnnotations = (
                     ({ location, ancestorTitles, title, failureMessages }) => ({
                         annotation_level: 'failure',
                         path: relative(cwd, testResultFilename),
-                        start_line: location?.line,
-                        end_line: location?.line,
+                        start_line: location?.line ?? 0,
+                        end_line: location?.line ?? 0,
                         title: ancestorTitles?.concat(title).join(' > '),
                         message: stripAnsi(failureMessages?.join('\n\n') ?? ''),
                     })
@@ -40,8 +39,5 @@ export const createFailedTestsAnnotations = (
         );
     });
 
-    return annotations.filter(
-        (value): value is Annotation =>
-            isValidNumber(value.start_line) && isValidNumber(value.end_line)
-    );
+    return annotations;
 };
