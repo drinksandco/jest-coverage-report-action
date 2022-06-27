@@ -12,7 +12,7 @@ const joinPaths = (...segments: Array<string | undefined>) =>
 
 const getPackageManagerInstallCommand = (
     packageManager: PackageManagerType
-): string => `${packageManager} install`;
+): string => `${packageManager} install --legacy-peer-deps`;
 
 const shouldInstallDeps = (skipStep: SkipStepType): Boolean =>
     !['all', 'install'].includes(skipStep);
